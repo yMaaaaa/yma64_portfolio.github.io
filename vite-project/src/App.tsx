@@ -1,15 +1,17 @@
 import { useState } from "react";
 import "./App.css";
-import "./components/Card/Card.tsx";
-import Card from "./components/Card/Card.tsx";
+import Navbar from "./components/Navbar/Navbar";
+import Card from "./components/Card/Card";
 
 function App() {
   const [] = useState(0);
 
   return (
     <>
-      {" "}
-      <Card />
+      <Navbar />
+      <div className="app-content">
+        <Card />
+      </div>
     </>
   );
 }
