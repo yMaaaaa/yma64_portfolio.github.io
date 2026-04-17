@@ -4,7 +4,7 @@ import { Navbar, Home, Projects, Contact, Personal } from "./exports";
 
 function App() {
   return (
-    <Router>
+    <Router basename="/Portfolio">
       <div className="app">
         <Navbar />
         <Routes>
