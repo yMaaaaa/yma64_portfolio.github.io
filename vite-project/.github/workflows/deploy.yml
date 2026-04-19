@@ -6,24 +6,15 @@ on:
       - main
       - master
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "npm"
@@ -34,38 +25,9 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: ./dist
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: github-pages
-          path: ./dist-artifact
-
-      - name: Extract and deploy
-        run: |
-          mkdir -p dist-extracted
-          cd dist-artifact
-          tar -xf artifact.tar
-          cd ..
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git checkout --orphan gh-pages-new
-          git rm -rf .
-          cp -r dist-extracted/* .
-          echo "" > .nojekyll
-          git add -A
-          git commit -m "Deploy $(date)" || echo "Nothing to commit"
-          git push origin gh-pages-new:gh-pages -f
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: false
